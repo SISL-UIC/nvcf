@@ -100,6 +100,20 @@ go_deps.gazelle_override(
     path = "github.com/NVIDIA/nvcf-go",
 )
 
+# The shared NVCF Go library github.com/NVIDIA/nvcf/src/libraries/go/lib
+# ships pre-generated BUILD.bazel files that reference `@rules_go`, which
+# does not resolve from inside the fetched module's bzlmod namespace.
+# `build_file_generation = "clean"` forces Gazelle to re-generate the BUILD
+# files in this repo's bzlmod context so `@rules_go` resolves. The module
+# also ships .proto files, so `gazelle:proto disable_global` lets Gazelle
+# treat the pre-generated .pb.go files as plain Go sources. Same workaround
+# used by ratelimiter, helm-reval-api, and nvca.
+go_deps.gazelle_override(
+    build_file_generation = "clean",
+    directives = ["gazelle:proto disable_global"],
+    path = "github.com/NVIDIA/nvcf/src/libraries/go/lib",
+)
+
 # Auto-managed by `bazel mod tidy`. Re-run after adding new imports.
 # Initial seed below is the minimum the proxy/ package needs; the tidy
 # command will reconcile against the actual transitive closure.
@@ -125,6 +139,7 @@ use_repo(
     "com_github_nats_io_nats_go",
     "com_github_nats_io_nkeys",
     "com_github_nvidia_nvcf_go",
+    "com_github_nvidia_nvcf_src_libraries_go_lib",
     "com_github_prometheus_client_golang",
     "com_github_quic_go_quic_go",
     "com_github_samber_lo",
