@@ -35,6 +35,8 @@ import (
 	"go.uber.org/zap"
 	"golang.org/x/net/http2"
 	"golang.org/x/net/http2/h2c"
+
+	nvcfversion "github.com/NVIDIA/nvcf/src/libraries/go/lib/pkg/version"
 )
 
 const (
@@ -110,6 +112,7 @@ func buildChiMux(mappings *config.GatewayConfig, serverConfig Config) (*chi.Mux,
 
 	r.Use(hostRouter.Handler)
 	r.With(serverTelemetry).Get(healthPath, healthManager.HandlerFunc)
+	r.Get("/info", nvcfversion.Handler().ServeHTTP)
 	return r, nil
 }
 
