@@ -182,6 +182,7 @@ releases:
         {{- end }}
         clusterName: {{ requiredEnv "CLUSTER_NAME" }}
         ncaId: {{ requiredEnv "NCA_ID" }}
+        {{- $selfManaged := dig "nvcaOperator" "selfManaged" dict .Values.global }}
         {{- $otelCollector := dig "otelCollector" dict $selfManaged }}
         {{- $otelCollectorEnabled := dig "enabled" $computeObservabilityEnabled $otelCollector }}
         selfManaged:
